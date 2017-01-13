@@ -194,10 +194,10 @@ def dijkstra(graphh):
         for key in graph:
             deadarr[key]=0
         del deadarr[sys.argv[1]]
-        print "dead",deadarr
+        #print "dead",deadarr
         time.sleep(3)
 
-        print "dead after sleep",deadarr
+        #print "dead after sleep",deadarr
         for key in deadarr:
             if deadarr[key] == 0:
                 tmp2.append(str(key))
@@ -205,19 +205,35 @@ def dijkstra(graphh):
                 del graph[key]
                 
         # at any instance the global graph will only contain neighbors that also exist as keys.
-        print "jugaar"
-        print graph
+        #print "jugaar"
+        #print graph
         for key in graph:
             tmp3 = graph[key]#for checking
             #tmp4 = graph[key]#for deleting.this tmp is saved back to the graph
             z = tmp3.keys()
             for y in z:
                 if y not in graph.keys():
-                    print "deleting key",y
+                    #print "deleting key",y
                     del tmp3[y]
+                for e in range(len(Table)):
+                    if key in Table[e][0]:#if key in graph is in list of neighbors
+                        #print "found in list of neighbors",key
+                        #and it also doesn't exist in my node
+
+                        if key not in graph[sys.argv[1]].keys():
+                            #add it to my dict in graph
+                            #find distance
+                            q=key
+                            for x in range(len(Table)):
+                                if q == Table[0]:
+                                    break
+                            tmp10=graph[sys.argv[1]]
+                            tmp10[key]=Table[x][1]
+                            #print "adding node",tmp10
+                            graph[sys.argv[1]]=tmp10
             graph[key]=tmp3
 
-
+        #vini,vedi,vini
         for x in tmp2:
             if x in deadarr:
                 del deadarr[x]
@@ -226,7 +242,7 @@ def dijkstra(graphh):
                         if x in tmp:
                             del tmp[x]
                         graph[k]=tmp
-        print graph
+        #print graph
         for key in graph:#mere naam k ilawa saray nodes
             if sys.argv[1] != key:
                 pth,Dist = shortestPath(graph,sys.argv[1],key)
