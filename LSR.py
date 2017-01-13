@@ -117,6 +117,8 @@ def send_packet(table,ID,flag):
             temp = {}
             for x in table1:
                 temp[str(x[0])]=x[1]
+
+
             graph[str(table[0])]=temp 
             forwardexplored = table[1]
             for i in range(len(Table)):
@@ -169,7 +171,7 @@ def rcv_packet(portno):
         data, addr = rcvSock.recvfrom(4096) # buffer size is 4096 bytes
         data = data.decode('utf-8')
         first_data = json.loads(data)
-        if first_data[0] in deadarr:
+        if first_data[0] in deadarr:#if no data has been received from this node
             if deadarr[first_data[0]] == 0:
                     deadarr[first_data[0]] = 1
         forwardthrd=threading.Thread(target=send_packet,kwargs={'table':first_data,'ID':first_data[0],'flag':1})
@@ -192,16 +194,29 @@ def dijkstra(graphh):
         for key in graph:
             deadarr[key]=0
         del deadarr[sys.argv[1]]
-       
+        print "dead",deadarr
         time.sleep(3)
 
-        
+        print "dead after sleep",deadarr
         for key in deadarr:
             if deadarr[key] == 0:
                 tmp2.append(str(key))
                 print "node "+str(key)+"is dead.removing "
                 del graph[key]
                 
+        # at any instance the global graph will only contain neighbors that also exist as keys.
+        print "jugaar"
+        print graph
+        for key in graph:
+            tmp3 = graph[key]#for checking
+            #tmp4 = graph[key]#for deleting.this tmp is saved back to the graph
+            z = tmp3.keys()
+            for y in z:
+                if y not in graph.keys():
+                    print "deleting key",y
+                    del tmp3[y]
+            graph[key]=tmp3
+
 
         for x in tmp2:
             if x in deadarr:
@@ -211,15 +226,15 @@ def dijkstra(graphh):
                         if x in tmp:
                             del tmp[x]
                         graph[k]=tmp
-
-        for key in graph:
+        print graph
+        for key in graph:#mere naam k ilawa saray nodes
             if sys.argv[1] != key:
                 pth,Dist = shortestPath(graph,sys.argv[1],key)
                 print "shortest path from "+sys.argv[1]+" to "+key+""
                 print pth
                 print "Distance:",Dist[key]
                 print "     -     "
-        print "*********"
+        print "DIJKSTRA *********"
         time.sleep(30)
         
     # convert the graph you made to graph object and send it to dijkstra func as a parameter
